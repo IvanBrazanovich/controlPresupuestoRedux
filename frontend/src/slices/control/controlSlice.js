@@ -29,14 +29,32 @@ export const postGasto = createAsyncThunk(
 );
 
 export const getGastos = createAsyncThunk("Presupuesto/getGastos", async () => {
-  try {
-    const res = await fetch("http://localhost:4000/gastos");
-    const result = await res.json();
-    return result;
-  } catch (err) {
-    return err.message;
-  }
+  const res = await fetch("http://localhost:4000/gastos");
+  const result = await res.json();
+
+  return result;
 });
+
+export const delGasto = createAsyncThunk(
+  "Presupuesto/deleteGasto",
+  async (gasto) => {
+    try {
+      const res = await fetch("http://localhost:4000/gastos", {
+        method: "DELETE",
+        body: JSON.stringify(gasto),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const result = await res.json();
+
+      return result;
+    } catch (err) {
+      return err.message;
+    }
+  }
+);
 
 export const controlSlice = createSlice({
   name: "Presupuesto",
@@ -48,11 +66,6 @@ export const controlSlice = createSlice({
     setError: (state, action) => {
       state.error = action.payload;
     },
-    addGasto: (state, action) => {
-      action.payload.id = state.id;
-      state.gastos = [...state.gastos, action.payload];
-      state.id = state.id + 1;
-    },
     setModal: (state, action) => {
       state.modal = action.payload;
     },
@@ -62,6 +75,7 @@ export const controlSlice = createSlice({
       .addCase(postGasto.pending, (state, action) => {})
       .addCase(postGasto.fulfilled, (state, action) => {
         console.log("El gasto se subió correctamente");
+        state.gastos = [...state.gastos, action.payload];
       })
       .addCase(postGasto.rejected, (state, action) => {
         console.log("Se negó brother", action.payload);
@@ -69,10 +83,15 @@ export const controlSlice = createSlice({
       .addCase(getGastos.pending, (state, action) => {})
       .addCase(getGastos.fulfilled, (state, action) => {
         state.gastos = action.payload;
-        console.log("Posta se añadieron");
       })
       .addCase(getGastos.rejected, (state, action) => {
-        console.log("Se negó brother", action.payload);
+        console.log("Se negó");
+        state.gastos = [];
+      })
+      .addCase(delGasto.fulfilled, (state, action) => {
+        state.gastos = state.gastos.filter(
+          (item) => item.id !== action.payload.id
+        );
       });
   },
 });

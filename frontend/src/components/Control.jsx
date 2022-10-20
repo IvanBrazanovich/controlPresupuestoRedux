@@ -1,10 +1,10 @@
 import React from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getGastos } from "../slices/control/controlSlice";
+import controlSlice, { getGastos } from "../slices/control/controlSlice";
 
 const Control = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch(controlSlice);
 
   useEffect(() => {
     dispatch(getGastos());

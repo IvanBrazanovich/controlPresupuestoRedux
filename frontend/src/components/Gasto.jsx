@@ -7,8 +7,15 @@ import iconoSalud from "../img/icono_salud.svg";
 import iconoSuscripciones from "../img/icono_suscripciones.svg";
 import iconoAhorro from "../img/icono_ahorro.svg";
 import { formatCurrency } from "../helpers/formatCurrency";
+import controlSlice, {
+  delGasto,
+  getGastos,
+} from "../slices/control/controlSlice";
+import { useDispatch } from "react-redux";
 
 const Gasto = ({ gasto }) => {
+  const dispatch = useDispatch();
+
   const { nombre, cantidad, categoria } = gasto;
   const diccionario = {
     casa: iconoCasa,
@@ -37,7 +44,12 @@ const Gasto = ({ gasto }) => {
         <button className="py-1 bg-blue-600 w-full text-white uppercase font-black text-sm mb-2 rounded-md">
           Editar
         </button>
-        <button className="py-1 bg-red-600 w-full text-white uppercase font-black text-sm mb-2 rounded-md">
+        <button
+          onClick={() => {
+            dispatch(delGasto(gasto));
+          }}
+          className="py-1 bg-red-600 w-full text-white uppercase font-black text-sm mb-2 rounded-md"
+        >
           Eliminar
         </button>
       </div>

@@ -41,7 +41,6 @@ const Modal = () => {
     dispatch(setError(false));
 
     //Si pasa añado al redux
-    dispatch(addGasto(data));
 
     dispatch(postGasto(data));
     //Close modal

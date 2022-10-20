@@ -33,8 +33,22 @@ app.post("/gastos", async (req, res) => {
 });
 
 app.get("/gastos", async (req, res) => {
-  const gastos = await prisma.gastos.findMany();
-  res.json(gastos);
+  try {
+    const gastos = await prisma.gastos.findMany();
+    res.json(gastos);
+  } catch (err) {
+    res.status(500);
+    res.send("Salió todo mal");
+  }
+});
+
+app.delete("/gastos", async (req, res) => {
+  const gasto = await prisma.gastos.delete({
+    where: {
+      id: req.body.id,
+    },
+  });
+  res.json(gasto);
 });
 
 app.listen(4000, () => {});
