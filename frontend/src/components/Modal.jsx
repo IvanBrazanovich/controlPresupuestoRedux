@@ -4,25 +4,26 @@ import {
   addGasto,
   setModal,
   postGasto,
+  setEdit,
+  editGasto,
+  setData,
 } from "../slices/control/controlSlice";
 import { useDispatch, useSelector } from "react-redux";
 import Error from "../components/Error";
+import { useEffect } from "react";
 
 const Modal = () => {
   const dispatch = useDispatch();
   const error = useSelector((state) => state.control.error);
-
-  const [data, setData] = useState({
-    nombre: "",
-    cantidad: 0,
-    categoria: "",
-  });
+  const data = useSelector((state) => state.control.data);
 
   const handleChange = (e) => {
-    setData({
-      ...data,
-      [e.target.name]: e.target.value,
-    });
+    dispatch(
+      setData({
+        ...data,
+        [e.target.name]: e.target.value,
+      })
+    );
   };
 
   const handleSubmit = (e) => {
@@ -37,12 +38,25 @@ const Modal = () => {
       dispatch(setError(true));
       return;
     }
-
     dispatch(setError(false));
 
-    //Si pasa añado al redux
+    //Check if editing
+    if (data && data.id !== 0) {
+      //Edito
+      dispatch(editGasto(data));
+      dispatch(
+        setData({
+          nombre: "",
+          cantidad: 0,
+          categoria: "",
+          id: 0,
+        })
+      );
+    } else {
+      //Si pasa añado al redux
+      dispatch(postGasto(data));
+    }
 
-    dispatch(postGasto(data));
     //Close modal
     dispatch(setModal(false));
   };
@@ -114,7 +128,7 @@ const Modal = () => {
             <input
               type="submit"
               className="bg-blue-700 font-bold text-white uppercase py-1 mt-4 cursor-pointer"
-              value="Añadir Gasto"
+              value={data && data.id ? "Editar" : "Añadir Gasto"}
             />
           </div>
         </form>

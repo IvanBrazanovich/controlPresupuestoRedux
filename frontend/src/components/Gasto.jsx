@@ -10,8 +10,11 @@ import { formatCurrency } from "../helpers/formatCurrency";
 import controlSlice, {
   delGasto,
   getGastos,
+  setData,
+  setModal,
 } from "../slices/control/controlSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 
 const Gasto = ({ gasto }) => {
   const dispatch = useDispatch();
@@ -41,7 +44,13 @@ const Gasto = ({ gasto }) => {
       </div>
 
       <div className="btn-wrappers">
-        <button className="py-1 bg-blue-600 w-full text-white uppercase font-black text-sm mb-2 rounded-md">
+        <button
+          onClick={() => {
+            dispatch(setModal(true));
+            dispatch(setData(gasto));
+          }}
+          className="py-1 bg-blue-600 w-full text-white uppercase font-black text-sm mb-2 rounded-md"
+        >
           Editar
         </button>
         <button

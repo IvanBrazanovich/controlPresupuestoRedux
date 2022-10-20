@@ -51,4 +51,24 @@ app.delete("/gastos", async (req, res) => {
   res.json(gasto);
 });
 
+app.put("/gastos", async (req, res) => {
+  try {
+    const gasto = await prisma.gastos.update({
+      where: {
+        id: req.body.id,
+      },
+      data: {
+        nombre: req.body.nombre,
+        cantidad: Number(req.body.cantidad),
+        categoria: req.body.categoria,
+        id: req.body.id,
+      },
+    });
+    res.json(gasto);
+  } catch (err) {
+    res.status(500);
+    res.send("Salió todo mal");
+  }
+});
+
 app.listen(4000, () => {});

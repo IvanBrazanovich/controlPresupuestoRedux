@@ -6,25 +6,43 @@ const initialState = {
   gastos: [],
   modal: false,
   id: 1,
+  data: {
+    nombre: "",
+    cantidad: 0,
+    categoria: "",
+    id: 0,
+  },
 };
 
 export const postGasto = createAsyncThunk(
   "Presupuesto/postGasto",
   async (gasto) => {
-    try {
-      const res = await fetch("http://localhost:4000/gastos", {
-        method: "POST",
-        body: JSON.stringify(gasto),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+    const res = await fetch("http://localhost:4000/gastos", {
+      method: "POST",
+      body: JSON.stringify(gasto),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-      const result = await res.json();
-      return result;
-    } catch (err) {
-      return err.message;
-    }
+    const result = await res.json();
+    return result;
+  }
+);
+
+export const editGasto = createAsyncThunk(
+  "Presupuesto/editGasto",
+  async (gasto) => {
+    const res = await fetch("http://localhost:4000/gastos", {
+      method: "PUT",
+      body: JSON.stringify(gasto),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const result = await res.json();
+    return result;
   }
 );
 
@@ -38,21 +56,17 @@ export const getGastos = createAsyncThunk("Presupuesto/getGastos", async () => {
 export const delGasto = createAsyncThunk(
   "Presupuesto/deleteGasto",
   async (gasto) => {
-    try {
-      const res = await fetch("http://localhost:4000/gastos", {
-        method: "DELETE",
-        body: JSON.stringify(gasto),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+    const res = await fetch("http://localhost:4000/gastos", {
+      method: "DELETE",
+      body: JSON.stringify(gasto),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-      const result = await res.json();
+    const result = await res.json();
 
-      return result;
-    } catch (err) {
-      return err.message;
-    }
+    return result;
   }
 );
 
@@ -68,6 +82,9 @@ export const controlSlice = createSlice({
     },
     setModal: (state, action) => {
       state.modal = action.payload;
+    },
+    setData: (state, action) => {
+      state.data = action.payload;
     },
   },
   extraReducers(builder) {
@@ -92,11 +109,22 @@ export const controlSlice = createSlice({
         state.gastos = state.gastos.filter(
           (item) => item.id !== action.payload.id
         );
+      })
+      .addCase(editGasto.fulfilled, (state, action) => {
+        state.gastos = state.gastos.map((gas) =>
+          gas.id === action.payload.id ? action.payload : gas
+        );
       });
   },
 });
 
-export const { savePresupuesto, setError, setModal, addGasto } =
-  controlSlice.actions;
+export const {
+  setData,
+  savePresupuesto,
+  setError,
+  setModal,
+  addGasto,
+  setEdit,
+} = controlSlice.actions;
 
 export default controlSlice.reducer;
