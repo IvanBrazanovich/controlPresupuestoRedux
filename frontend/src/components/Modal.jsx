@@ -44,18 +44,19 @@ const Modal = () => {
     if (data && data.id !== 0) {
       //Edito
       dispatch(editGasto(data));
-      dispatch(
-        setData({
-          nombre: "",
-          cantidad: 0,
-          categoria: "",
-          id: 0,
-        })
-      );
     } else {
       //Si pasa añado al redux
       dispatch(postGasto(data));
     }
+
+    dispatch(
+      setData({
+        nombre: "",
+        cantidad: 0,
+        categoria: "",
+        id: 0,
+      })
+    );
 
     //Close modal
     dispatch(setModal(false));

@@ -13,8 +13,7 @@ import controlSlice, {
   setData,
   setModal,
 } from "../slices/control/controlSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 
 const Gasto = ({ gasto }) => {
   const dispatch = useDispatch();
