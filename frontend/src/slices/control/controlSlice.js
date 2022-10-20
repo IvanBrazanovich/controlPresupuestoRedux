@@ -5,7 +5,6 @@ const initialState = {
   error: false,
   gastos: [],
   modal: false,
-  id: 1,
   data: {
     nombre: "",
     cantidad: 0,
@@ -19,6 +18,21 @@ export const postGasto = createAsyncThunk(
   async (gasto) => {
     const res = await fetch("http://localhost:4000/gastos", {
       method: "POST",
+      body: JSON.stringify(gasto),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const result = await res.json();
+    return result;
+  }
+);
+export const delGastos = createAsyncThunk(
+  "Presupuesto/delGastos",
+  async (gasto) => {
+    const res = await fetch("http://localhost:4000/gastos", {
+      method: "DELETE",
       body: JSON.stringify(gasto),
       headers: {
         "Content-Type": "application/json",
@@ -56,7 +70,7 @@ export const getGastos = createAsyncThunk("Presupuesto/getGastos", async () => {
 export const delGasto = createAsyncThunk(
   "Presupuesto/deleteGasto",
   async (gasto) => {
-    const res = await fetch("http://localhost:4000/gastos", {
+    const res = await fetch("http://localhost:4000/gasto", {
       method: "DELETE",
       body: JSON.stringify(gasto),
       headers: {
@@ -76,6 +90,7 @@ export const controlSlice = createSlice({
   reducers: {
     savePresupuesto: (state, action) => {
       state.presupuesto = action.payload;
+      localStorage.setItem("presupuesto", action.payload);
     },
     setError: (state, action) => {
       state.error = action.payload;

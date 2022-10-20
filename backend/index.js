@@ -42,7 +42,7 @@ app.get("/gastos", async (req, res) => {
   }
 });
 
-app.delete("/gastos", async (req, res) => {
+app.delete("/gasto", async (req, res) => {
   const gasto = await prisma.gastos.delete({
     where: {
       id: req.body.id,
@@ -64,6 +64,16 @@ app.put("/gastos", async (req, res) => {
         id: req.body.id,
       },
     });
+    res.json(gasto);
+  } catch (err) {
+    res.status(500);
+    res.send("Salió todo mal");
+  }
+});
+
+app.delete("/gastos", async (req, res) => {
+  try {
+    const gasto = await prisma.gastos.deleteMany();
     res.json(gasto);
   } catch (err) {
     res.status(500);

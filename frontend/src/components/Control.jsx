@@ -1,7 +1,14 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import controlSlice, { getGastos } from "../slices/control/controlSlice";
+import controlSlice, {
+  delGastos,
+  getGastos,
+  savePresupuesto,
+  setData,
+  setError,
+  setModal,
+} from "../slices/control/controlSlice";
 import { formatCurrency } from "../helpers/formatCurrency";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
@@ -25,7 +32,6 @@ const Control = () => {
       );
 
       const per = ((gas * 100) / presupuesto).toFixed(2);
-      console.log(per);
       setPercentage(per);
 
       setGastado(gas);
@@ -33,6 +39,25 @@ const Control = () => {
 
     calcular();
   }, [gastos]);
+
+  const resetearApp = (e) => {
+    e.preventDefault();
+
+    dispatch(savePresupuesto(0));
+    dispatch(setModal(false));
+    dispatch(
+      setData({
+        nombre: "",
+        cantidad: 0,
+        categoria: "",
+        id: 0,
+      })
+    );
+
+    dispatch(setError(false));
+    dispatch(delGastos());
+    localStorage.clear();
+  };
 
   return (
     <section className="  bg-white mt-10 rounded-lg shadow-md  px-10 py-6 text-center flex">
@@ -49,7 +74,10 @@ const Control = () => {
         ;
       </div>
       <div className="control__container w-1/2">
-        <button className="bg-red-500 text-white uppercase font-semibold w-full text-xs py-1 rounded-md ">
+        <button
+          onClick={(e) => resetearApp(e)}
+          className="bg-red-500 text-white uppercase font-semibold w-full text-xs py-1 rounded-md "
+        >
           Resetear app
         </button>
 

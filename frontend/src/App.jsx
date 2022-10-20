@@ -5,17 +5,31 @@ import controlSlice, {
   getGastos,
 } from "./slices/control/controlSlice";
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import NewPresupuesto from "./components/NewPresupuesto";
 import Control from "./components/Control";
 import Modal from "./components/Modal";
 import Gastos from "./components/Gastos";
 
 function App() {
-  const presupuesto = useSelector((state) => state.control.presupuesto);
-  const modal = useSelector((state) => state.control.modal);
+  const dispatch = useDispatch();
+  const presupRedux = useSelector((state) => state.control.presupuesto);
+  const [presupuestoStorage, setPresupuesto] = useState(() => {
+    const local = JSON.parse(localStorage.getItem("presupuesto"));
+    return local;
+  });
 
-  const dispatch = useDispatch(controlSlice);
+  const presupuesto = presupRedux || presupuestoStorage;
+
+  useEffect(() => {
+    if (presupuesto) {
+      dispatch(savePresupuesto(presupuesto));
+    }
+  }, [presupuesto, presupRedux, presupuestoStorage]);
+
+  console.log(presupuesto);
+
+  const modal = useSelector((state) => state.control.modal);
 
   return (
     <main className="App p-1">
@@ -23,7 +37,7 @@ function App() {
       <h1 className="text-2xl text-center mt-10 text-white font-bold uppercase">
         Planificador de Gastos
       </h1>
-      {presupuesto === 0 ? (
+      {!presupuesto ? (
         <NewPresupuesto />
       ) : (
         <div className=" w-[30rem] mx-auto ">
